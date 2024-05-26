@@ -1,15 +1,17 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { z } from 'zod';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { BoxSelectIcon, SquareCheck, Trash2 } from 'lucide-react';
-import { randomUUID as uuid } from 'crypto';
+import { nanoid as uid } from 'nanoid';
 
-const formSchema = z.object({
-    test: z.array(z.object({ name: z.string(), email: z.string().email() })),
-});
+type submitProps = {
+    users: {
+        name: string;
+        email: string;
+    }[];
+}
 
 let renderCount = 0;
 export default function DynamicForm() {
@@ -33,15 +35,12 @@ export default function DynamicForm() {
         return null;
     }
 
-    interface submitValue {
-        users: {
-            name: string;
-            email: string;
-        }[];
-    }
-    // 2. Define a submit handler.
-    function onSubmit(values: submitValue) {
-        console.log(values);
+    function onSubmit(values: submitProps) {
+        const withUUID = values.users.map((user) => ({
+            ...user,
+            user_id: uid(12).toUpperCase(),
+        }));
+        console.log(withUUID);
     }
     renderCount++;
     function setSelection(index: number) {
